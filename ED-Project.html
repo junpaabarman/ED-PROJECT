@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 Sensor Data Monitor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        .sensor-data {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        .sensor-label {
+            font-weight: bold;
+            width: 200px;
+        }
+
+        .sensor-value {
+            font-size: 18px;
+            color: #007bff;
+        }
+
+        .status-message {
+            font-size: 18px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .error-message {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ESP32 Accident & Overspeed Detection</h1>
+        
+        <div class="sensor-data">
+            <span class="sensor-label">Acceleration X:</span>
+            <span class="sensor-value" id="accelerationX">Loading...</span>
+        </div>
+        <div class="sensor-data">
+            <span class="sensor-label">Acceleration Y:</span>
+            <span class="sensor-value" id="accelerationY">Loading...</span>
+        </div>
+        <div class="sensor-data">
+            <span class="sensor-label">Acceleration Z:</span>
+            <span class="sensor-value" id="accelerationZ">Loading...</span>
+        </div>
+        <div class="sensor-data">
+            <span class="sensor-label">IR Sensor Status:</span>
+            <span class="sensor-value" id="irStatus">Loading...</span>
+        </div>
+
+        <div class="status-message" id="statusMessage">Connecting...</div>
+    </div>
+
+    <script>
+        // Function to fetch and update sensor data
+        async function fetchSensorData() {
+            const url = 'YOUR_SERVER_ENDPOINT'; // Replace with your server endpoint
+            const options = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            try {
+                const response = await fetch(url, options);
+                const data = await response.json();
+
+                // Update sensor values
+                document.getElementById('accelerationX').textContent = data.accelerationX;
+                document.getElementById('accelerationY').textContent = data.accelerationY;
+                document.getElementById('accelerationZ').textContent = data.accelerationZ;
+                document.getElementById('irStatus').textContent = data.irStatus;
+
+                document.getElementById('statusMessage').textContent = 'Connected';
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('statusMessage').textContent = 'Connection Error';
+                document.getElementById('statusMessage').classList.add('error-message');
+            }
+        }
+
+        // Update sensor data periodically (adjust interval as needed)
+        setInterval(fetchSensorData, 5000); // Fetch data every 5 seconds
+    </script>
+</body>
+</html>
